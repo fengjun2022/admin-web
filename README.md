@@ -27,7 +27,7 @@
 - `vite.config.ts`: Vite配置文件
 - `yarn.lock`: Yarn锁文件
 
-![img.png](img.png)
+![image-20240806115528056](./public/md/image-20240806115528056.png)
 
 ## 介绍
 
