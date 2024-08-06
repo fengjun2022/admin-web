@@ -1,0 +1,98 @@
+    <Table ref="bookData"  :callback="getBookData"
+              :metadata="bookMate"
+              :sort="[
+             { prop: 'createTime', order: 'descending' },
+             { prop: 'updateTime', order: 'descending' }]">
+
+
+        <template #operate="row">
+          <div class="flex justify-center">
+            <div class=" ml-4 text-[#409eff] cursor-pointer " @click="editBook(row.row)">编辑</div>
+            <el-popconfirm confirm-button-text="确定" cancel-button-text="取消"   @confirm="delBook(row.row)" title="你确认要删除吗?">
+              <template #reference>
+                <div class="ml-4 text-[red] cursor-pointer" >删除</div>
+              </template>
+            </el-popconfirm>
+          </div>
+        </template>
+      </Table>
+  
+      const getBookData = async (page, size) => {
+      const res =  await getBooks(page, size)
+      return {
+        total:res["total"],
+        data: res["records"]
+      }
+};
+
+// 表格元数据配置
+const bookMate = ref<mateDataOptions>({
+  metaArr: [
+    {label: "书名", value: "bookName"},
+    {label: "课文数", value: "coursesTotal",width:150},
+    {label: "路径", value: "filePath"},
+    {label: "操作", btn: true, fixed: "right", width: 300, slot: 'operate'}
+  ],
+  buttons: [
+    {
+      callback: addNewBook,
+      text: "新增书本"
+    },
+  ]
+});
+
+const bookData =ref()
+  bookData.value.fnCallback(async (page,pageSize)=>{
+    let res;
+    if (bookType.value===1){
+      res =  await addNewBooks<object[]>({name:newbookName.value})
+      if (res.code!==200) return
+      ElMessage.success("新增书本成功")
+    }else {
+      res = await updateBooks({id:bookRow.value["id"],name: newbookName.value})
+      if (res.code!==200) return
+      ElMessage.success("修改书本成功")
+    }
+    newbookName.value = ""
+    innerVisible.value = false
+
+    return getBooks(page,pageSize);
+  })
+}
+
+const delBook =  (row)=>{
+  bookData.value.fnCallback(async(page,pageSize)=>{
+  const  res = await  delBookAndCourseAndWord({id:row.id})
+    if (res.code!==200) return
+    ElMessage.success("删除书本成功")
+    return getBooks(page,pageSize);
+
+  })
+}
+
+const searchBookChange = ()=>{
+  bookData.value.fnCallback(async(page,pageSize)=>{
+    const  res = await  getSelectBooks({name:BookTxt.value,page,pageSize})
+    if (res.code!==200) return
+    console.log(res.data)
+    return res;
+  })
+}
+
+
+const BookTxt = ref("")
+
+const inputCallback2 = (val) => {
+  BookTxt.value = val
+}
+
+const BookBars = ref<(inputOption | selectOption)[]>([
+  {
+    type: RetrieveBartType.input,
+    text: "搜索书本",
+    model: {value: BookTxt},
+    changeCallback: inputCallback2,
+  },
+])
+
+
