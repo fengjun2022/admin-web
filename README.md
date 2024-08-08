@@ -35,7 +35,7 @@
 
 
 ## GitHub地址 ：
-[https://github.com/fengjun2022/Vue3-Vite-TS-Tailwind-CSS-template/tree/main]
+[https://github.com/fengjun2022/admin-web.git]
 
 ## 技术栈
 
@@ -56,7 +56,7 @@
 1. 克隆项目到本地：
 
    ```
-   git clone https://github.com/fengjun2022/Vue3-Vite-TS-Tailwind-CSS-template.git
+   git clone https://github.com/fengjun2022/admin-web.git
    ```
 
 2. 进入项目目录：
